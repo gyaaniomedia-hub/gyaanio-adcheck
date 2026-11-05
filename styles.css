@@ -386,3 +386,5 @@ footer.foot .wrap { display: flex; justify-content: space-between; gap: 12px; fl
   .topbar .wrap { flex-wrap: wrap; row-gap: 10px; }
   .nav { width: 100%; }
 }
+
+.source-note { margin: 10px 0 0; font-size: 13px; color: rgba(243, 240, 235, 0.7); border-left: 2px solid var(--gold); padding-left: 10px; }

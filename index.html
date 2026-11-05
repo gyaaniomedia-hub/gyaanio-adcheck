@@ -34,8 +34,8 @@
 
 <main class="wrap">
   <form id="checkForm" class="card lift" novalidate>
-    <label class="field" for="ad">Your ad text <span class="hint">Portal listing, Instagram caption or WhatsApp message</span></label>
-    <textarea id="ad" name="ad" placeholder="Paste your ad here. For example: Stunning 2 bedroom apartment in Dubai Marina with full sea view, AED 2,450,000. Call now to book a viewing." required></textarea>
+    <label class="field" for="ad">Your ad text <span class="hint">Portal listing, Instagram caption, WhatsApp message, or a link to a web page</span></label>
+    <textarea id="ad" name="ad" placeholder="Paste your ad text, or a link to a listing or landing page. For example: Stunning 2 bedroom apartment in Dubai Marina with full sea view, AED 2,450,000. Call now to book a viewing." required></textarea>
 
     <div class="checks">
       <label class="check"><input type="checkbox" id="offplan" name="offplan"> This property is off plan</label>
@@ -56,6 +56,7 @@
         <div>
           <h3><span id="verdictText">Result</span> <span class="pill" id="verdictPill"></span></h3>
           <p id="summary"></p>
+          <p id="sourceNote" class="source-note" style="display:none"></p>
           <div class="tally" id="tally"></div>
         </div>
       </div>
@@ -168,6 +169,8 @@
     document.getElementById("score").innerHTML =
       (typeof score === "number" ? esc(String(score)) : "?") + "<small>score</small>";
     document.getElementById("summary").textContent = clean(data.summary);
+    var noteEl = document.getElementById("sourceNote");
+    if (noteEl) { noteEl.textContent = data.source_note ? clean(data.source_note) : ""; noteEl.style.display = data.source_note ? "block" : "none"; }
     document.getElementById("tally").innerHTML =
       '<span class="pill pass">' + counts.pass + " Pass</span>" +
       '<span class="pill warn">' + counts.warn + " Warn</span>" +
@@ -197,12 +200,12 @@
       if (!r.ok) throw new Error("status " + r.status);
       return r.json();
     }).then(function (data) {
-      if (data && data.error) throw new Error(data.error);
+      if (data && data.error) { var e = new Error(data.error); e.friendly = true; throw e; }
       render(data);
     }).catch(function (err) {
       showError(err && err.name === "AbortError"
         ? "The check took too long. Please try again in a moment."
-        : "We could not check your ad right now. Please try again in a moment.");
+        : (err && err.friendly ? err.message : "We could not check your ad right now. Please try again in a moment."));
     }).finally(function () {
       clearTimeout(timer);
       setLoading(false);
