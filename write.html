@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AdCheck Listing Writer</title>
+<meta name="description" content="Enter your unit details once and get a compliant portal listing, Instagram caption and WhatsApp broadcast with every mandatory item included.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0B0B'/%3E%3Cpath d='M18 33l9 9 19-20' stroke='%23C9A356' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">Gyaanio <b>AdCheck</b></a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html">Check an ad</a>
+      <a href="write.html" aria-current="page">Write a listing</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Listing writer</span>
+    <h1>Fill in the facts once. Get <em>three compliant ads</em>.</h1>
+    <p class="lead">A portal listing, an Instagram caption and a WhatsApp broadcast, each carrying the permit number, developer, escrow account and completion date.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <form id="writeForm" class="card lift" novalidate>
+    <div class="grid">
+      <div class="group-title">The unit</div>
+      <div class="full">
+        <label class="field" for="unit">Unit <span class="req">*</span> <span class="hint">Type, bedrooms, project and area</span></label>
+        <input type="text" id="unit" placeholder="2 bedroom apartment, Marina Vista Tower, Dubai Marina" required>
+      </div>
+      <div>
+        <label class="field" for="size">Size in sq ft <span class="req">*</span></label>
+        <input type="text" id="size" inputmode="decimal" placeholder="1,250" required>
+      </div>
+      <div>
+        <label class="field" for="price">Price in AED <span class="req">*</span></label>
+        <input type="text" id="price" inputmode="decimal" placeholder="2,450,000" required>
+      </div>
+
+      <div class="group-title">Compliance details</div>
+      <div>
+        <label class="field" for="permit">Trakheesi permit number <span class="req">*</span></label>
+        <input type="text" id="permit" placeholder="7123456789" required>
+      </div>
+      <div>
+        <label class="field" for="developer">Developer <span class="req">*</span></label>
+        <input type="text" id="developer" placeholder="Emaar Properties" required>
+      </div>
+      <div>
+        <label class="field" for="escrow">Escrow account number <span class="req">*</span></label>
+        <input type="text" id="escrow" placeholder="1234567890" required>
+      </div>
+      <div>
+        <label class="field" for="completion">Completion date <span class="req">*</span> <span class="hint">For example Q4 2027</span></label>
+        <input type="text" id="completion" placeholder="Q4 2027" required>
+      </div>
+
+      <div class="group-title">Your brokerage <span class="hint" style="text-transform:none;letter-spacing:0;font-weight:400">Also mandatory on every ad</span></div>
+      <div>
+        <label class="field" for="brokerage">Brokerage name</label>
+        <input type="text" id="brokerage" placeholder="Gyaanio Real Estate">
+      </div>
+      <div>
+        <label class="field" for="orn">RERA ORN</label>
+        <input type="text" id="orn" placeholder="12345">
+      </div>
+      <div>
+        <label class="field" for="agent">Agent name</label>
+        <input type="text" id="agent" placeholder="Sara Khan">
+      </div>
+      <div>
+        <label class="field" for="brn">Agent BRN</label>
+        <input type="text" id="brn" placeholder="67890">
+      </div>
+      <div>
+        <label class="field" for="phone">Contact number</label>
+        <input type="text" id="phone" inputmode="tel" placeholder="+971 50 123 4567">
+      </div>
+      <div>
+        <label class="field" for="plan">Payment plan <span class="hint">Optional</span></label>
+        <input type="text" id="plan" placeholder="60/40, 10% on booking">
+      </div>
+      <div class="full">
+        <label class="field" for="highlights">Highlights <span class="hint">Optional, one per line or separated by commas</span></label>
+        <textarea id="highlights" style="min-height:96px" placeholder="Full sea view&#10;Private balcony&#10;Walk to Marina Walk"></textarea>
+      </div>
+    </div>
+
+    <div class="checks" style="margin-bottom:8px">
+      <label class="check"><input type="checkbox" id="offplan" checked> This property is off plan</label>
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <button type="submit" class="btn gold">Generate my ads</button>
+      <button type="button" class="btn ghost" id="sampleBtn">Fill with sample details</button>
+    </div>
+    <div class="error" id="error" role="alert"></div>
+  </form>
+
+  <div id="results" class="hidden" aria-live="polite">
+    <section class="block">
+      <h2 class="section-title">Mandatory items</h2>
+      <div class="card" style="padding:20px 22px">
+        <p style="margin:0;font-size:15px">Every item below is written into all three versions.</p>
+        <ul class="checklist" id="checklist"></ul>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab" role="tab" aria-selected="true" data-tab="portal">Portal listing</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="insta">Instagram caption</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="wa">WhatsApp broadcast</button>
+      </div>
+
+      <div class="output" data-panel="portal">
+        <div class="head"><h3>Portal listing</h3><button type="button" class="btn small" data-copy="portal">Copy listing</button></div>
+        <pre id="out_portal"></pre>
+      </div>
+      <div class="output hidden" data-panel="insta">
+        <div class="head"><h3>Instagram caption</h3><button type="button" class="btn small" data-copy="insta">Copy caption</button></div>
+        <pre id="out_insta"></pre>
+        <div class="meta">Place the DLD QR code on the image or the first slide of the carousel.</div>
+      </div>
+      <div class="output hidden" data-panel="wa">
+        <div class="head"><h3>WhatsApp broadcast</h3><button type="button" class="btn small" data-copy="wa">Copy broadcast</button></div>
+        <pre id="out_wa"></pre>
+        <div class="meta">Attach the property image carrying the DLD QR code with the broadcast.</div>
+      </div>
+
+      <div class="actions" style="margin-top:16px">
+        <button type="button" class="btn" id="checkBtn">Run this listing through AdCheck</button>
+      </div>
+    </section>
+  </div>
+
+  <aside class="cta">
+    <div>
+      <h3>Go further with <span>AdCheck Pro</span></h3>
+      <p>For brokerages that publish every day and cannot afford a single rejected ad.</p>
+      <ul>
+        <li>Unlimited checks for your whole team</li>
+        <li>Bulk review of portal listings</li>
+        <li>Permit and expiry tracking</li>
+      </ul>
+    </div>
+    <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/971543306616?text=Hi%20Gyaanio%2C%20I%20would%20like%20to%20know%20more%20about%20AdCheck%20Pro.">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.7-.4Z"/></svg>
+      Get AdCheck Pro on WhatsApp
+    </a>
+  </aside>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© Gyaanio. AdCheck is guidance, not legal advice. Always confirm details with your permit.</span>
+    <a href="index.html">Check an existing ad</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var REQUIRED = [
+    ["unit", "Unit"], ["size", "Size"], ["price", "Price"], ["permit", "Trakheesi permit number"],
+    ["developer", "Developer"], ["escrow", "Escrow account number"], ["completion", "Completion date"]
+  ];
+  var OPTIONAL = ["brokerage", "orn", "agent", "brn", "phone", "plan", "highlights"];
+  var out = {};
+
+  function val(id) { return $(id).value.trim().replace(/\s*[\u2012-\u2015]\s*/g, ", ").replace(/([A-Za-z])-(?=[A-Za-z])/g, "$1 "); }
+  function or(v, ph) { return v || "[" + ph + "]"; }
+  function num(v) {
+    var n = Number(String(v).replace(/[^0-9.]/g, ""));
+    return n && isFinite(n) ? n.toLocaleString("en-US") : v;
+  }
+  function tag(s) { return "#" + s.replace(/[^A-Za-z0-9]/g, ""); }
+
+  function read() {
+    var d = {};
+    REQUIRED.forEach(function (f) { d[f[0]] = val(f[0]); });
+    OPTIONAL.forEach(function (k) { d[k] = val(k); });
+    d.size = num(d.size);
+    d.price = num(d.price);
+    d.offplan = $("offplan").checked;
+    d.list = d.highlights ? d.highlights.split(/\n|,/).map(function (s) { return s.trim(); }).filter(Boolean) : [];
+    return d;
+  }
+
+  function brokerLine(d) {
+    return "Listed by " + or(d.brokerage, "BROKERAGE NAME") + ", RERA ORN " + or(d.orn, "ORN") +
+      ". Agent " + or(d.agent, "AGENT NAME") + ", BRN " + or(d.brn, "BRN") + ".";
+  }
+
+  function portal(d) {
+    var L = [];
+    L.push(d.unit + " | " + d.size + " sq ft | AED " + d.price);
+    L.push("");
+    L.push((d.offplan ? "Off plan " : "") + d.unit + " by " + d.developer + ", offering " + d.size +
+      " sq ft of living space at AED " + d.price + "." +
+      (d.offplan ? " Expected completion " + d.completion + "." : " Completion " + d.completion + "."));
+    if (d.list.length) {
+      L.push("");
+      L.push("Highlights");
+      d.list.forEach(function (h) { L.push("• " + h); });
+    }
+    L.push("");
+    L.push("Key facts");
+    L.push("• Unit: " + d.unit);
+    L.push("• Built up area: " + d.size + " sq ft");
+    L.push("• Price: AED " + d.price);
+    if (d.plan) L.push("• Payment plan: " + d.plan);
+    L.push("• Developer: " + d.developer);
+    L.push("• Escrow account number: " + d.escrow);
+    L.push("• " + (d.offplan ? "Expected completion" : "Completion") + ": " + d.completion);
+    L.push("• Trakheesi permit number: " + d.permit);
+    L.push("");
+    L.push(brokerLine(d));
+    L.push("Contact " + or(d.phone, "CONTACT NUMBER") + " to arrange a viewing.");
+    L.push("Scan the DLD QR code on this listing to verify the permit.");
+    return L.join("\n");
+  }
+
+  function insta(d) {
+    var L = [];
+    L.push((d.offplan ? "New launch. " : "") + d.unit + " ✨");
+    L.push("");
+    L.push("📐 " + d.size + " sq ft");
+    L.push("💰 AED " + d.price);
+    if (d.plan) L.push("🗓 Payment plan " + d.plan);
+    L.push("🏗 Developer: " + d.developer);
+    L.push("🔑 " + (d.offplan ? "Expected completion " : "Completion ") + d.completion);
+    if (d.list.length) {
+      L.push("");
+      d.list.slice(0, 4).forEach(function (h) { L.push("✔ " + h); });
+    }
+    L.push("");
+    L.push("DM us or call " + or(d.phone, "CONTACT NUMBER") + " for the floor plan and a private viewing.");
+    L.push("");
+    L.push("Trakheesi permit " + d.permit + " | Escrow account " + d.escrow);
+    L.push(brokerLine(d));
+    L.push("Scan the DLD QR code on the post to verify.");
+    L.push("");
+    var tags = ["#DubaiRealEstate", "#DubaiProperty", tag(d.developer)];
+    if (d.offplan) tags.push("#OffPlanDubai");
+    var area = d.unit.split(",").pop().trim();
+    if (area && area !== d.unit) tags.push(tag(area));
+    L.push(tags.filter(function (t) { return t.length > 1; }).join(" "));
+    return L.join("\n");
+  }
+
+  function whatsapp(d) {
+    var L = [];
+    L.push("*" + d.unit + "*");
+    L.push("");
+    L.push("Size: " + d.size + " sq ft");
+    L.push("Price: AED " + d.price);
+    if (d.plan) L.push("Payment plan: " + d.plan);
+    L.push("Developer: " + d.developer);
+    L.push((d.offplan ? "Expected completion: " : "Completion: ") + d.completion);
+    L.push("Escrow account: " + d.escrow);
+    L.push("Trakheesi permit: " + d.permit);
+    if (d.list.length) {
+      L.push("");
+      d.list.slice(0, 3).forEach(function (h) { L.push("• " + h); });
+    }
+    L.push("");
+    L.push("Reply YES for the brochure and floor plan, or call " + or(d.phone, "CONTACT NUMBER") + ".");
+    L.push("");
+    L.push("_" + brokerLine(d) + " DLD QR code in the attached image._");
+    L.push("Reply STOP to stop receiving these updates.");
+    return L.join("\n");
+  }
+
+  function checklist(d) {
+    var items = [
+      ["Trakheesi permit number", !!d.permit],
+      ["DLD QR code reminder", true],
+      ["Price in AED", !!d.price],
+      ["Size in sq ft", !!d.size],
+      ["Developer name", !!d.developer],
+      ["Escrow account number", !!d.escrow],
+      ["Completion date", !!d.completion],
+      ["Brokerage name and ORN", !!(d.brokerage && d.orn)],
+      ["Agent name and BRN", !!(d.agent && d.brn)],
+      ["Contact number", !!d.phone]
+    ];
+    $("checklist").innerHTML = items.map(function (i) {
+      return '<li class="' + (i[1] ? "ok" : "no") + '"><span class="dot">' + (i[1] ? "✓" : "!") + "</span>" +
+        i[0] + (i[1] ? "" : " <span class=\"hint\">add it, a placeholder is shown</span>") + "</li>";
+    }).join("");
+  }
+
+  function esc(s) { return s.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function show(id, text) { $(id).innerHTML = esc(text).replace(/\[([^\]]+)\]/g, '<mark class="ph">[$1]</mark>'); }
+
+  $("writeForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var missing = REQUIRED.filter(function (f) { return !val(f[0]); });
+    var err = $("error");
+    if (missing.length) {
+      err.textContent = "Please add: " + missing.map(function (f) { return f[1]; }).join(", ") + ".";
+      err.classList.add("show");
+      $(missing[0][0]).focus();
+      return;
+    }
+    err.classList.remove("show");
+    var d = read();
+    out = { portal: portal(d), insta: insta(d), wa: whatsapp(d), offplan: d.offplan };
+    show("out_portal", out.portal);
+    show("out_insta", out.insta);
+    show("out_wa", out.wa);
+    checklist(d);
+    $("results").classList.remove("hidden");
+    $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  document.querySelectorAll(".tab").forEach(function (t) {
+    t.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); });
+      document.querySelectorAll("[data-panel]").forEach(function (p) {
+        p.classList.toggle("hidden", p.getAttribute("data-panel") !== t.getAttribute("data-tab"));
+      });
+    });
+  });
+
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    var label = b.textContent;
+    b.addEventListener("click", function () {
+      var text = out[b.getAttribute("data-copy")] || "";
+      function done() { b.textContent = "Copied"; setTimeout(function () { b.textContent = label; }, 1800); }
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fb); else fb();
+      function fb() {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  $("checkBtn").addEventListener("click", function () {
+    var active = document.querySelector('.tab[aria-selected="true"]').getAttribute("data-tab");
+    try { sessionStorage.setItem("adcheck_prefill", JSON.stringify({ ad: out[active], offplan: out.offplan })); } catch (e) {}
+    location.href = "index.html";
+  });
+
+  $("sampleBtn").addEventListener("click", function () {
+    var s = {
+      unit: "2 bedroom apartment, Marina Vista Tower, Dubai Marina", size: "1250", price: "2450000",
+      permit: "7123456789", developer: "Emaar Properties", escrow: "1234567890", completion: "Q4 2027",
+      brokerage: "Gyaanio Real Estate", orn: "12345", agent: "Sara Khan", brn: "67890",
+      phone: "+971 50 123 4567", plan: "60/40, 10% on booking",
+      highlights: "Full sea view\nPrivate balcony\nWalk to Marina Walk"
+    };
+    Object.keys(s).forEach(function (k) { $(k).value = s[k]; });
+    $("offplan").checked = true;
+  });
+})();
+</script>
+</body>
+</html>

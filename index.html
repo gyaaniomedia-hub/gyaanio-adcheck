@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gyaanio AdCheck</title>
+<meta name="description" content="Check your Dubai property ad against RERA and DLD advertising rules in seconds. Get a pass, warn or fail per rule and a corrected ad ready to publish.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0B0B'/%3E%3Cpath d='M18 33l9 9 19-20' stroke='%23C9A356' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">Gyaanio <b>AdCheck</b></a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" aria-current="page">Check an ad</a>
+      <a href="write.html">Write a listing</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Dubai property ad compliance</span>
+    <h1>Know your ad is <em>compliant</em> before it goes live.</h1>
+    <p class="lead">Paste any listing, caption or broadcast. AdCheck reviews it against the Trakheesi, QR code, brokerage and off plan disclosure rules and hands you a corrected version.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <form id="checkForm" class="card lift" novalidate>
+    <label class="field" for="ad">Your ad text <span class="hint">Portal listing, Instagram caption or WhatsApp message</span></label>
+    <textarea id="ad" name="ad" placeholder="Paste your ad here. For example: Stunning 2 bedroom apartment in Dubai Marina with full sea view, AED 2,450,000. Call now to book a viewing." required></textarea>
+
+    <div class="checks">
+      <label class="check"><input type="checkbox" id="offplan" name="offplan"> This property is off plan</label>
+      <label class="check"><input type="checkbox" id="has_qr" name="has_qr"> The DLD QR code is on the creative</label>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn gold" id="runBtn"><span class="spinner" aria-hidden="true"></span><span class="label">Check my ad</span></button>
+      <button type="button" class="btn ghost" id="sampleBtn">Try a sample ad</button>
+    </div>
+    <div class="error" id="error" role="alert"></div>
+  </form>
+
+  <div id="results" class="hidden" aria-live="polite">
+    <section class="block">
+      <div class="verdict">
+        <div class="score" id="score">0<small>of 10</small></div>
+        <div>
+          <h3><span id="verdictText">Result</span> <span class="pill" id="verdictPill"></span></h3>
+          <p id="summary"></p>
+          <div class="tally" id="tally"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Rule by rule</h2>
+      <ul class="rules" id="rules"></ul>
+    </section>
+
+    <section class="block">
+      <div class="output">
+        <div class="head">
+          <h3>Corrected ad</h3>
+          <button type="button" class="btn small" id="copyBtn">Copy corrected ad</button>
+        </div>
+        <pre id="rewritten"></pre>
+        <div class="meta">Highlighted brackets are details only you can supply. Replace them before you publish.</div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="cta">
+    <div>
+      <h3>Go further with <span>AdCheck Pro</span></h3>
+      <p>For brokerages that publish every day and cannot afford a single rejected ad.</p>
+      <ul>
+        <li>Unlimited checks for your whole team</li>
+        <li>Bulk review of portal listings</li>
+        <li>Permit and expiry tracking</li>
+      </ul>
+    </div>
+    <a class="btn wa" id="waBtn" target="_blank" rel="noopener" href="https://wa.me/971543306616?text=Hi%20Gyaanio%2C%20I%20would%20like%20to%20know%20more%20about%20AdCheck%20Pro.">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.7-.4Z"/></svg>
+      Get AdCheck Pro on WhatsApp
+    </a>
+  </aside>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© Gyaanio. AdCheck is guidance, not legal advice. Always confirm details with your permit.</span>
+    <a href="write.html">Write a compliant listing</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var ENDPOINT = "https://fktqdtxlbgixvozllnbq.supabase.co/functions/v1/adcheck";
+  var form = document.getElementById("checkForm");
+  var adEl = document.getElementById("ad");
+  var offplanEl = document.getElementById("offplan");
+  var qrEl = document.getElementById("has_qr");
+  var runBtn = document.getElementById("runBtn");
+  var errEl = document.getElementById("error");
+  var results = document.getElementById("results");
+  var rewrittenEl = document.getElementById("rewritten");
+  var rewrittenText = "";
+
+  var SAMPLE = "Luxury 2BR in Dubai Marina, guaranteed 10% ROI! Best price in the market, limited units. Call now 0501234567";
+
+  // Keep copy free of long dashes, even when it comes from the server.
+  function clean(s) {
+    return String(s == null ? "" : s).replace(/\s*[\u2012-\u2015]\s*/g, ", ").replace(/([A-Za-z])-(?=[A-Za-z])/g, "$1 ");
+  }
+  function esc(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function norm(status) {
+    var s = String(status || "").toLowerCase();
+    if (s.indexOf("pass") === 0 || s === "ok") return "pass";
+    if (s.indexOf("fail") === 0) return "fail";
+    return "warn";
+  }
+  var LABEL = { pass: "Pass", warn: "Warn", fail: "Fail" };
+
+  function showError(msg) { errEl.textContent = msg; errEl.classList.add("show"); }
+  function clearError() { errEl.textContent = ""; errEl.classList.remove("show"); }
+
+  function setLoading(on) {
+    runBtn.disabled = on;
+    runBtn.classList.toggle("loading", on);
+    runBtn.querySelector(".label").textContent = on ? "Checking your ad" : "Check my ad";
+  }
+
+  function render(data) {
+    var checks = Array.isArray(data.checks) ? data.checks : [];
+    var counts = { pass: 0, warn: 0, fail: 0 };
+    var html = checks.map(function (c) {
+      var st = norm(c.status);
+      counts[st]++;
+      var fix = c.fix && st !== "pass"
+        ? '<div class="fix"><b>Fix:</b> ' + esc(clean(c.fix)) + "</div>" : "";
+      return '<li class="rule ' + st + '"><header><h4>' + esc(clean(c.rule)) +
+        '</h4><span class="pill ' + st + '">' + LABEL[st] + "</span></header>" +
+        "<p>" + esc(clean(c.finding)) + "</p>" + fix + "</li>";
+    }).join("");
+    document.getElementById("rules").innerHTML = html || "<li class=\"rule\"><p>No rules were returned.</p></li>";
+
+    var verdict = norm(data.verdict || (counts.fail ? "fail" : counts.warn ? "warn" : "pass"));
+    var pill = document.getElementById("verdictPill");
+    pill.className = "pill " + verdict;
+    pill.textContent = LABEL[verdict];
+    document.getElementById("verdictText").textContent =
+      verdict === "pass" ? "Ready to publish" : verdict === "warn" ? "Almost there" : "Not ready to publish";
+
+    var score = data.score;
+    document.getElementById("score").innerHTML =
+      (typeof score === "number" ? esc(String(score)) : "?") + "<small>score</small>";
+    document.getElementById("summary").textContent = clean(data.summary);
+    document.getElementById("tally").innerHTML =
+      '<span class="pill pass">' + counts.pass + " Pass</span>" +
+      '<span class="pill warn">' + counts.warn + " Warn</span>" +
+      '<span class="pill fail">' + counts.fail + " Fail</span>";
+
+    rewrittenText = clean(data.rewritten_ad || data.corrected_ad || "");
+    rewrittenEl.innerHTML = esc(rewrittenText).replace(/\[([^\]]+)\]/g, '<mark class="ph">[$1]</mark>');
+
+    results.classList.remove("hidden");
+    results.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    clearError();
+    var ad = adEl.value.trim();
+    if (ad.length < 10) { showError("Paste your ad text first. It needs at least a sentence to check."); adEl.focus(); return; }
+    setLoading(true);
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 90000);
+    fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ad: ad, offplan: offplanEl.checked, has_qr: qrEl.checked }),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) {
+      if (!r.ok) throw new Error("status " + r.status);
+      return r.json();
+    }).then(function (data) {
+      if (data && data.error) throw new Error(data.error);
+      render(data);
+    }).catch(function (err) {
+      showError(err && err.name === "AbortError"
+        ? "The check took too long. Please try again in a moment."
+        : "We could not check your ad right now. Please try again in a moment.");
+    }).finally(function () {
+      clearTimeout(timer);
+      setLoading(false);
+    });
+  });
+
+  document.getElementById("sampleBtn").addEventListener("click", function () {
+    adEl.value = SAMPLE;
+    offplanEl.checked = true;
+    qrEl.checked = false;
+    adEl.focus();
+  });
+
+  var copyBtn = document.getElementById("copyBtn");
+  copyBtn.addEventListener("click", function () {
+    copyText(rewrittenText, copyBtn, "Copy corrected ad");
+  });
+
+  function copyText(text, btn, label) {
+    function done() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = label; }, 1800); }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) { btn.textContent = "Press Ctrl C to copy"; }
+      document.body.removeChild(ta);
+    }
+  }
+
+  // Prefill from the listing writer.
+  try {
+    var pre = sessionStorage.getItem("adcheck_prefill");
+    if (pre) {
+      var p = JSON.parse(pre);
+      adEl.value = p.ad || "";
+      offplanEl.checked = !!p.offplan;
+      sessionStorage.removeItem("adcheck_prefill");
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
