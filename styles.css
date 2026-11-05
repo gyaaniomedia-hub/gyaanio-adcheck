@@ -377,3 +377,8 @@ footer.foot .wrap { display: flex; justify-content: space-between; gap: 12px; fl
   .nav a { padding: 6px 10px; font-size: 12px; white-space: nowrap; }
   .topbar .wrap { gap: 8px; }
 }
+
+@media (max-width: 480px) {
+  .topbar .wrap { flex-wrap: wrap; row-gap: 10px; }
+  .nav { width: 100%; }
+}

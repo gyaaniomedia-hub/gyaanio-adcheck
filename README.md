@@ -8,7 +8,7 @@ Gyaanio AdCheck is a static website served from the root of this repository via 
 | --- | --- |
 | `index.html` | Home / landing page |
 | `write.html` | Write ad copy |
-| `audit.html` | Audit an ad |
+| `audit.html` | Brokerage audit: check up to 50 ads in one run and print a branded A4 compliance report |
 
 ## Running locally
 
@@ -31,3 +31,11 @@ The site has no backend in this repository. All API calls go to a **Supabase Edg
 Every push to `main` triggers `.github/workflows/pages.yml`, which uploads the repository root with `actions/upload-pages-artifact` and publishes it with `actions/deploy-pages`. The `.nojekyll` file tells GitHub Pages to serve files as-is without Jekyll processing.
 
 Live site: <https://gyaaniomedia-hub.github.io/gyaanio-adcheck/>
+
+## Tests
+
+```bash
+node tests/audit.test.js
+```
+
+Runs a five ad audit on `audit.html` against the live function in headless Chromium, checks the counts, fine exposure, print layout and copy, and saves screenshots and a PDF to `tests/screenshots`.

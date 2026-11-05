@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gyaanio AdCheck Audit</title>
+<meta name="description" content="Run a branded DLD and RERA compliance audit across up to 50 property ads.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0B0B'/%3E%3Cpath d='M18 33l9 9 19-20' stroke='%23C9A356' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  /* Audit page additions on top of styles.css */
+  [hidden] { display: none !important; }
+  .card + .card { margin-top: 20px; }
+  .card h2 { font-family: var(--serif); font-size: 22px; margin: 0 0 4px; color: var(--black); }
+  .card .sub { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+  .step { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--black); color: var(--gold); font-family: var(--sans); font-size: 13px; font-weight: 700; margin-right: 10px; vertical-align: 3px; }
+  span.field { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  #adsInput { min-height: 260px; font-size: 14px; }
+
+  .logo-drop { display: flex; align-items: center; gap: 14px; border: 1px dashed var(--gold); border-radius: 10px; padding: 8px 14px; background: var(--cream); cursor: pointer; }
+  .logo-drop:hover { background: #FFF9EC; }
+  .logo-drop input { display: none; }
+  .logo-drop strong { display: block; font-size: 14px; }
+  .logo-thumb { width: 48px; height: 48px; border-radius: 8px; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; color: var(--muted); font-size: 11px; }
+  .logo-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .meta-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .meta-row b { color: var(--black); }
+  .meta-row .over { color: var(--fail); font-weight: 600; }
+
+  .bulk { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .ads { display: grid; gap: 10px; }
+  .ad-item { display: grid; grid-template-columns: 30px 1fr auto; gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--cream); }
+  .ad-num { font-family: var(--serif); font-weight: 600; color: var(--gold); font-size: 18px; line-height: 1.3; }
+  .ad-text { font-size: 14px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .ad-flags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ad-flags label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; cursor: pointer; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+  .ad-flags label:has(input:checked) { border-color: var(--gold); background: #FFF9EC; }
+  .ad-flags input { accent-color: var(--gold); width: 15px; height: 15px; margin: 0; }
+  .ad-item.short { border-color: var(--fail); }
+  .ad-item.short .ad-text::after { content: "  Too short to check (needs 20 characters)"; color: var(--fail); font-weight: 600; }
+  .empty { text-align: center; color: var(--muted); padding: 22px; border: 1px dashed var(--line); border-radius: 10px; font-size: 14px; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  .progress { display: none; }
+  .progress.on { display: block; }
+  .bar { height: 12px; background: #F1E6CC; border-radius: 999px; overflow: hidden; margin: 18px 0 8px; }
+  .bar > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #A8843A, var(--gold)); border-radius: 999px; transition: width .35s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
+  .progress-label b { color: var(--black); }
+  .log { margin-top: 10px; font-size: 13px; color: var(--muted); max-height: 140px; overflow: auto; }
+
+  /* Report */
+  #reportSection { display: none; }
+  #reportSection.on { display: block; }
+  .report-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 36px 0 14px; }
+  .report-toolbar .section-title { margin: 0; }
+  .report { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; max-width: 794px; margin: 0 auto; box-shadow: 0 18px 40px rgba(11,11,11,.08); line-height: 1.5; }
+  .r-head { background: var(--black); color: var(--cream); padding: 26px 30px; display: flex; align-items: center; gap: 18px; border-bottom: 3px solid var(--gold); }
+  .r-logo { width: 64px; height: 64px; border-radius: 10px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
+  .r-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .r-logo.mono { background: var(--gold); color: var(--black); font-family: var(--serif); font-weight: 700; font-size: 24px; }
+  .r-title { flex: 1; min-width: 0; }
+  .r-title .eyebrow { margin: 0; font-size: 11px; }
+  .r-title h3 { font-family: var(--serif); font-size: 26px; margin: 2px 0 0; line-height: 1.2; overflow-wrap: anywhere; }
+  .r-date { text-align: right; font-size: 12px; color: rgba(251,248,242,.7); flex: none; }
+  .r-date b { display: block; color: var(--cream); font-size: 14px; font-weight: 600; }
+  .r-body { padding: 24px 30px 26px; }
+  .r-section-title { font-family: var(--serif); font-size: 17px; color: var(--black); margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .r-section-title:first-child { margin-top: 0; }
+  .r-section-title small { font-family: var(--sans); font-size: 11px; color: var(--muted); font-weight: 500; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .stat { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--cream); }
+  .stat .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .stat .v { font-family: var(--serif); font-size: 30px; font-weight: 700; line-height: 1.1; margin-top: 4px; color: var(--black); }
+  .stat.pass .v { color: var(--pass); }
+  .stat.fix .v { color: var(--warn); }
+  .stat.fail .v { color: var(--fail); }
+  .stat .p { font-size: 11.5px; color: var(--muted); }
+  .split { display: flex; height: 10px; border-radius: 999px; overflow: hidden; margin-top: 12px; background: #F1E6CC; gap: 2px; }
+  .split i { display: block; height: 100%; }
+  .split .s-pass { background: var(--pass); }
+  .split .s-fix { background: var(--warn); }
+  .split .s-fail { background: var(--fail); }
+
+  .exposure { margin-top: 14px; background: var(--black); color: var(--cream); border-radius: 10px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; border-left: 4px solid var(--gold); }
+  .exposure .k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+  .exposure .note { font-size: 12px; color: rgba(251,248,242,.7); margin-top: 2px; }
+  .exposure .v { font-family: var(--serif); font-size: 30px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+
+  .viol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .viol li { display: grid; grid-template-columns: 26px 1fr 150px 74px; gap: 10px; align-items: center; font-size: 13.5px; }
+  .viol .rank { font-family: var(--serif); font-weight: 700; color: var(--gold); font-size: 16px; }
+  .viol .name { font-weight: 600; }
+  .viol .meter { height: 8px; background: #F1E6CC; border-radius: 999px; overflow: hidden; }
+  .viol .meter i { display: block; height: 100%; background: var(--gold); border-radius: 999px; }
+  .viol .num { text-align: right; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .viol .num b { color: var(--black); font-size: 14px; }
+  .none { font-size: 13.5px; color: var(--pass); font-weight: 600; margin: 0; }
+
+  table.ads-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .ads-table th { text-align: left; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--ink); }
+  .ads-table td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .ads-table tr:nth-child(even) td { background: #FDFBF7; }
+  .ads-table .c-num { width: 30px; color: var(--gold); font-weight: 700; }
+  .ads-table .c-ad .ex { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ads-table .c-ad .flags { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+  .ads-table .c-verdict { width: 108px; }
+  .ads-table .c-score { width: 64px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .report .pill { font-size: 10.5px; padding: 3px 9px; }
+  .pill.fix { background: var(--warn-bg); color: var(--warn); }
+  .pill.err { background: #EEE; color: #555; }
+
+  .r-foot { padding: 14px 30px; background: var(--cream); border-top: 1px solid var(--line); font-size: 10.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; }
+  .r-foot b { color: #A8843A; }
+
+  @media (max-width: 720px) {
+    .grid2 { grid-template-columns: 1fr; }
+    .ad-item { grid-template-columns: 26px 1fr; }
+    .ad-flags { grid-column: 2; }
+    .r-head { flex-wrap: wrap; padding: 20px; }
+    .r-date { text-align: left; width: 100%; }
+    .r-body { padding: 20px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .viol li { grid-template-columns: 22px 1fr 64px; }
+    .viol .meter { display: none; }
+    .exposure { flex-direction: column; align-items: flex-start; }
+    .r-foot { flex-direction: column; padding: 14px 20px; }
+  }
+
+  /* Print: A4 portrait, report only */
+  @page { size: A4 portrait; margin: 10mm; }
+  @media print {
+    html, body { background: #fff; font-size: 12px; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print, .report-toolbar { display: none !important; }
+    #reportSection { display: block !important; }
+    main.wrap { max-width: none; padding: 0; }
+    .report { max-width: none; width: 100%; border: none; border-radius: 0; box-shadow: none; }
+    .r-head { padding: 16px 20px; flex-wrap: nowrap; }
+    .r-date { text-align: right; width: auto; }
+    .r-body { padding: 14px 20px 16px; }
+    .r-section-title { margin: 14px 0 8px; }
+    .stats { grid-template-columns: repeat(4, 1fr); }
+    .stat .v, .exposure .v { font-size: 24px; }
+    .exposure { padding: 12px 16px; flex-direction: row; align-items: center; }
+    .viol li { grid-template-columns: 22px 1fr 130px 70px; }
+    .viol .meter { display: block; }
+    .ads-table { font-size: 10.5px; }
+    .ads-table td { padding: 4px 6px; }
+    .ads-table tr { break-inside: avoid; }
+    .ads-table thead { display: table-header-group; }
+    .r-foot { padding: 10px 20px; flex-direction: row; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar no-print">
+  <div class="wrap">
+    <a class="brand" href="index.html">Gyaanio <b>AdCheck</b></a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html">Check an ad</a>
+      <a href="write.html">Write a listing</a>
+      <a href="audit.html" aria-current="page">Audit</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero no-print">
+  <div class="wrap">
+    <span class="eyebrow">Brokerage compliance audit</span>
+    <h1>Audit every ad your team <em>publishes</em> in one pass.</h1>
+    <p class="lead">Paste up to 50 property ads, tick what applies to each one, and get a branded compliance audit against DLD and RERA advertising rules, ready to print or save as PDF.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card lift no-print" aria-labelledby="s1">
+    <h2 id="s1"><span class="step">1</span>Your brokerage</h2>
+    <p class="sub">These appear at the top of the audit.</p>
+    <div class="grid2">
+      <div>
+        <label class="field" for="brokerName">Brokerage name</label>
+        <input type="text" id="brokerName" placeholder="e.g. Palm Crest Realty" autocomplete="organization">
+      </div>
+      <div>
+        <span class="field">Logo</span>
+        <label class="logo-drop" for="logoInput">
+          <span class="logo-thumb" id="logoThumb">None</span>
+          <span><strong id="logoName">Upload your logo</strong><span class="hint" style="display:block">PNG, JPG or SVG. Stays in your browser.</span></span>
+          <input type="file" id="logoInput" accept="image/*">
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <section class="card no-print" aria-labelledby="s2">
+    <h2 id="s2"><span class="step">2</span>Paste your ads</h2>
+    <p class="sub">One ad per block. Put a line with <b>===</b> on its own between ads. Up to 50 ads.</p>
+    <label class="field" for="adsInput">Ads</label>
+    <textarea id="adsInput" spellcheck="false" placeholder="Spacious 2 bedroom apartment in Dubai Marina, 1,250 sq ft, AED 2,100,000. Trakheesi permit 7123456789...
+===
+Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
+==="></textarea>
+    <div class="meta-row">
+      <span class="count" id="adCount"><b>0</b> ads found</span>
+      <span>Separator: a line with <b>===</b></span>
+    </div>
+  </section>
+
+  <section class="card no-print" aria-labelledby="s3">
+    <h2 id="s3"><span class="step">3</span>Confirm each ad</h2>
+    <p class="sub">Tick <b>Off plan</b> if the property is off plan, and <b>QR present</b> if the DLD Madmoun QR code is on the image or video.</p>
+    <div class="bulk" id="bulk" hidden>
+      <button type="button" class="btn ghost small" data-bulk="offplan:1">Mark all off plan</button>
+      <button type="button" class="btn ghost small" data-bulk="offplan:0">Clear off plan</button>
+      <button type="button" class="btn ghost small" data-bulk="qr:1">Mark all QR present</button>
+      <button type="button" class="btn ghost small" data-bulk="qr:0">Clear QR present</button>
+    </div>
+    <div class="ads" id="adList"><div class="empty">Your ads will appear here once you paste them above.</div></div>
+
+    <div class="actions" style="margin-top:20px">
+      <button type="button" class="btn gold" id="runBtn" disabled>Run audit</button>
+      <button type="button" class="btn ghost" id="stopBtn" hidden>Stop</button>
+    </div>
+
+    <div class="progress" id="progress" aria-live="polite">
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+      <div class="progress-label"><span id="progressText">Starting</span><b id="progressPct">0%</b></div>
+      <div class="log" id="log"></div>
+    </div>
+    <div class="error" id="errorBox" role="alert"></div>
+  </section>
+
+  <section id="reportSection" aria-labelledby="reportHeading">
+    <div class="report-toolbar no-print">
+      <h2 class="section-title" id="reportHeading">Your compliance audit</h2>
+      <div class="actions">
+        <button type="button" class="btn ghost" id="editBtn">Edit ads</button>
+        <button type="button" class="btn" id="printBtn">Print to PDF</button>
+      </div>
+    </div>
+    <article class="report" id="report"></article>
+  </section>
+</main>
+
+<footer class="foot no-print">
+  <div class="wrap">
+    <span>© Gyaanio. AdCheck is guidance, not legal advice. Always confirm details with your permit.</span>
+    <a href="index.html">Check a single ad</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const ENDPOINT = "https://fktqdtxlbgixvozllnbq.supabase.co/functions/v1/adcheck";
+  const MAX_ADS = 50;
+  const FINE_PER_AD = 50000;
+  const SEPARATOR = /^\s*(?:={3,}|-{3,}|_{3,})\s*$/;
+
+  const RULES = [
+    { name: "One permit per listing", test: /one permit|per listing|reus|expired|manipulat/i },
+    { name: "DLD Madmoun QR code", test: /qr|madmoun/i },
+    { name: "Trakheesi permit number", test: /trakheesi|permit/i },
+    { name: "Brokerage identity and RERA ORN", test: /broker|orn|brn|identity/i },
+    { name: "Off plan disclosure", test: /off\s*plan|escrow|developer|completion/i },
+    { name: "Accuracy of price, size and details", test: /accura|price|size|bedroom|payment plan/i },
+    { name: "Prohibited claims", test: /prohibit|claim|guarantee/i },
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    name: $("brokerName"), logoInput: $("logoInput"), logoThumb: $("logoThumb"), logoName: $("logoName"),
+    ads: $("adsInput"), adCount: $("adCount"), adList: $("adList"), bulk: $("bulk"),
+    run: $("runBtn"), stop: $("stopBtn"), progress: $("progress"), bar: $("bar"), barFill: $("barFill"),
+    progressText: $("progressText"), progressPct: $("progressPct"), log: $("log"), error: $("errorBox"),
+    reportSection: $("reportSection"), report: $("report"), print: $("printBtn"), edit: $("editBtn"),
+  };
+
+  let logoData = "";
+  let ads = [];            // [{ text, offplan, qr }]
+  let running = false;
+  let stopRequested = false;
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmtAED = (n) => "AED " + n.toLocaleString("en-US");
+  const pct = (n, d) => (d ? Math.round((n / d) * 100) : 0);
+
+  /* Logo */
+  els.logoInput.addEventListener("change", () => {
+    const f = els.logoInput.files && els.logoInput.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      logoData = r.result;
+      els.logoThumb.innerHTML = '<img alt="" src="' + logoData + '">';
+      els.logoName.textContent = f.name;
+    };
+    r.readAsDataURL(f);
+  });
+
+  /* Parse ads */
+  function parseAds(raw) {
+    const blocks = [];
+    let cur = [];
+    raw.replace(/\r\n?/g, "\n").split("\n").forEach((line) => {
+      if (SEPARATOR.test(line)) { blocks.push(cur.join("\n")); cur = []; }
+      else cur.push(line);
+    });
+    blocks.push(cur.join("\n"));
+    return blocks.map((b) => b.trim()).filter(Boolean);
+  }
+
+  function syncAds() {
+    const texts = parseAds(els.ads.value);
+    ads = texts.map((text, i) => {
+      const prev = ads[i];
+      return { text, offplan: prev ? prev.offplan : /off\s*plan/i.test(text), qr: prev ? prev.qr : false };
+    });
+    renderAdList();
+  }
+
+  function renderAdList() {
+    const n = ads.length;
+    const over = n > MAX_ADS;
+    els.adCount.innerHTML = over
+      ? '<span class="over">' + n + " ads found. The limit is " + MAX_ADS + ", please remove " + (n - MAX_ADS) + ".</span>"
+      : "<b>" + n + "</b> " + (n === 1 ? "ad" : "ads") + " found";
+    els.bulk.hidden = n === 0;
+    if (!n) {
+      els.adList.innerHTML = '<div class="empty">Your ads will appear here once you paste them above.</div>';
+    } else {
+      els.adList.innerHTML = ads.map((a, i) =>
+        '<div class="ad-item' + (a.text.length < 20 ? " short" : "") + '" data-i="' + i + '">' +
+          '<div class="ad-num">' + (i + 1) + "</div>" +
+          '<div class="ad-text">' + esc(a.text) + "</div>" +
+          '<div class="ad-flags">' +
+            '<label><input type="checkbox" data-k="offplan"' + (a.offplan ? " checked" : "") + "> Off plan</label>" +
+            '<label><input type="checkbox" data-k="qr"' + (a.qr ? " checked" : "") + "> QR present</label>" +
+          "</div></div>"
+      ).join("");
+    }
+    updateRunState();
+  }
+
+  function updateRunState() {
+    const ok = ads.length > 0 && ads.length <= MAX_ADS && ads.every((a) => a.text.length >= 20);
+    els.run.disabled = running || !ok;
+  }
+
+  let t;
+  els.ads.addEventListener("input", () => { clearTimeout(t); t = setTimeout(syncAds, 200); });
+  els.adList.addEventListener("change", (e) => {
+    const cb = e.target.closest("input[type=checkbox]");
+    if (!cb) return;
+    const i = +cb.closest(".ad-item").dataset.i;
+    ads[i][cb.dataset.k] = cb.checked;
+  });
+  els.bulk.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-bulk]");
+    if (!b) return;
+    const [k, v] = b.dataset.bulk.split(":");
+    ads.forEach((a) => (a[k] = v === "1"));
+    renderAdList();
+  });
+
+  /* API */
+  async function checkAd(ad) {
+    let lastErr;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ad: ad.text, offplan: !!ad.offplan, has_qr: !!ad.qr }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.error) throw new Error(data.error || "Request failed (" + res.status + ")");
+        return data;
+      } catch (err) {
+        lastErr = err;
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 1500));
+      }
+    }
+    throw lastErr;
+  }
+
+  function normVerdict(v) {
+    const s = String(v || "").toUpperCase().replace(/[^A-Z ]/g, " ").trim();
+    if (s.startsWith("PASS")) return "PASS";
+    if (s.startsWith("FIX")) return "FIX NEEDED";
+    if (s.startsWith("FAIL")) return "FAIL";
+    return "";
+  }
+
+  function ruleName(raw, index) {
+    const hit = RULES.find((r) => r.test.test(raw || ""));
+    if (hit) return hit.name;
+    return raw ? String(raw).replace(/[\u2010-\u2015\u2212-]/g, " ") : "Rule " + (index + 1);
+  }
+
+  function setProgress(done, total, label) {
+    const p = pct(done, total);
+    els.barFill.style.width = p + "%";
+    els.bar.setAttribute("aria-valuenow", p);
+    els.progressPct.textContent = p + "%";
+    els.progressText.textContent = label;
+  }
+
+  function logLine(html) {
+    const d = document.createElement("div");
+    d.innerHTML = html;
+    els.log.prepend(d);
+  }
+
+  els.run.addEventListener("click", runAudit);
+  els.stop.addEventListener("click", () => { stopRequested = true; els.stop.disabled = true; els.stop.textContent = "Stopping"; });
+
+  async function runAudit() {
+    if (running) return;
+    syncAds();
+    if (els.run.disabled) return;
+    running = true; stopRequested = false;
+    updateRunState();
+    els.error.classList.remove("show");
+    els.reportSection.classList.remove("on");
+    els.progress.classList.add("on");
+    els.stop.hidden = false; els.stop.disabled = false; els.stop.textContent = "Stop";
+    els.log.innerHTML = "";
+
+    const snapshot = ads.map((a) => ({ ...a }));
+    const results = [];
+    const total = snapshot.length;
+    setProgress(0, total, "Checking ad 1 of " + total);
+
+    for (let i = 0; i < total; i++) {
+      if (stopRequested) break;
+      setProgress(i, total, "Checking ad " + (i + 1) + " of " + total);
+      try {
+        const r = await checkAd(snapshot[i]);
+        const verdict = normVerdict(r.verdict);
+        results.push({ ad: snapshot[i], verdict, score: Number.isFinite(+r.score) ? Math.round(+r.score) : null, checks: Array.isArray(r.checks) ? r.checks : [] });
+        logLine("Ad " + (i + 1) + ": <b>" + esc(verdict || "Unknown") + "</b>" + (r.score != null ? ", score " + esc(r.score) : ""));
+      } catch (err) {
+        results.push({ ad: snapshot[i], verdict: "", score: null, checks: [], error: err.message });
+        logLine("Ad " + (i + 1) + ": could not be checked (" + esc(err.message) + ")");
+      }
+      setProgress(i + 1, total, (i + 1 === total ? "All " + total + " ads checked" : "Checked " + (i + 1) + " of " + total));
+    }
+
+    running = false;
+    els.stop.hidden = true;
+    updateRunState();
+
+    if (stopRequested) setProgress(results.length, total, "Stopped after " + results.length + " of " + total);
+    const checked = results.filter((r) => r.verdict);
+    if (!checked.length) {
+      els.error.textContent = "None of the ads could be checked. Please check your connection and try again.";
+      els.error.classList.add("show");
+      return;
+    }
+    renderReport(results);
+  }
+
+  /* Report */
+  function renderReport(results) {
+    const name = els.name.value.trim() || "Your Brokerage";
+    const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    const checked = results.filter((r) => r.verdict);
+    const n = checked.length;
+    const cPass = checked.filter((r) => r.verdict === "PASS").length;
+    const cFix = checked.filter((r) => r.verdict === "FIX NEEDED").length;
+    const cFail = checked.filter((r) => r.verdict === "FAIL").length;
+    const notChecked = results.length - n;
+    const scores = checked.map((r) => r.score).filter((s) => s != null);
+    const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+
+    // Violations: count ads that broke each rule (fail or warn), once per ad per rule.
+    const tally = new Map();
+    checked.forEach((r) => {
+      const seen = new Map();
+      r.checks.forEach((c, idx) => {
+        const st = String(c.status || "").toLowerCase();
+        if (st !== "fail" && st !== "warn") return;
+        const key = ruleName(c.rule, idx);
+        const prev = seen.get(key);
+        if (!prev || st === "fail") seen.set(key, st);
+      });
+      seen.forEach((st, key) => {
+        const t = tally.get(key) || { name: key, ads: 0, fail: 0 };
+        t.ads++; if (st === "fail") t.fail++;
+        tally.set(key, t);
+      });
+    });
+    const top = [...tally.values()].sort((a, b) => b.ads - a.ads || b.fail - a.fail || a.name.localeCompare(b.name)).slice(0, 5);
+
+    const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("") || "G";
+    const logoHtml = logoData
+      ? '<div class="r-logo"><img alt="' + esc(name) + ' logo" src="' + logoData + '"></div>'
+      : '<div class="r-logo mono" aria-hidden="true">' + esc(initials) + "</div>";
+
+    const pillFor = (v) => v === "PASS" ? '<span class="pill pass">PASS</span>'
+      : v === "FIX NEEDED" ? '<span class="pill fix">FIX NEEDED</span>'
+      : v === "FAIL" ? '<span class="pill fail">FAIL</span>'
+      : '<span class="pill err">NOT CHECKED</span>';
+
+    const violHtml = top.length
+      ? '<ol class="viol">' + top.map((v, i) =>
+          "<li>" +
+            '<span class="rank">' + (i + 1) + "</span>" +
+            '<span class="name">' + esc(v.name) + "</span>" +
+            '<span class="meter"><i style="width:' + pct(v.ads, n) + '%"></i></span>' +
+            '<span class="num"><b>' + v.ads + "</b> of " + n + " ads</span>" +
+          "</li>").join("") + "</ol>"
+      : '<p class="none">No rule was broken by any ad checked. Well done.</p>';
+
+    const rows = results.map((r, i) => {
+      const flags = [r.ad.offplan ? "Off plan" : "", r.ad.qr ? "QR present" : ""].filter(Boolean).join(" · ");
+      return "<tr>" +
+        '<td class="c-num">' + (i + 1) + "</td>" +
+        '<td class="c-ad"><div class="ex">' + esc(r.ad.text) + "</div>" + (flags ? '<div class="flags">' + flags + "</div>" : "") + "</td>" +
+        '<td class="c-verdict">' + pillFor(r.verdict) + "</td>" +
+        '<td class="c-score">' + (r.score != null ? r.score + "<span style=\"color:var(--muted);font-weight:500\">/100</span>" : "") + "</td>" +
+      "</tr>";
+    }).join("");
+
+    els.report.innerHTML =
+      '<header class="r-head">' + logoHtml +
+        '<div class="r-title"><div class="eyebrow">Ad Compliance Audit</div><h3>' + esc(name) + "</h3></div>" +
+        '<div class="r-date">Audit date<b>' + esc(date) + "</b></div>" +
+      "</header>" +
+      '<div class="r-body">' +
+        '<div class="r-section-title">Summary<small>' + (avg != null ? "Average score " + avg + "/100" : "") + "</small></div>" +
+        '<div class="stats">' +
+          '<div class="stat"><div class="k">Ads checked</div><div class="v">' + n + '</div><div class="p">' + (notChecked ? notChecked + " not checked" : "of " + results.length + " submitted") + "</div></div>" +
+          '<div class="stat pass"><div class="k">Pass</div><div class="v">' + cPass + '</div><div class="p">' + pct(cPass, n) + "% of ads</div></div>" +
+          '<div class="stat fix"><div class="k">Fix needed</div><div class="v">' + cFix + '</div><div class="p">' + pct(cFix, n) + "% of ads</div></div>" +
+          '<div class="stat fail"><div class="k">Fail</div><div class="v">' + cFail + '</div><div class="p">' + pct(cFail, n) + "% of ads</div></div>" +
+        "</div>" +
+        '<div class="split" aria-hidden="true">' +
+          (cPass ? '<i class="s-pass" style="flex:' + cPass + '"></i>' : "") +
+          (cFix ? '<i class="s-fix" style="flex:' + cFix + '"></i>' : "") +
+          (cFail ? '<i class="s-fail" style="flex:' + cFail + '"></i>' : "") +
+        "</div>" +
+        '<div class="exposure"><div><div class="k">Estimated fine exposure</div><div class="note">' + cFail + " failing " + (cFail === 1 ? "ad" : "ads") + " × AED 50,000 per ad</div></div>" +
+          '<div class="v">' + fmtAED(cFail * FINE_PER_AD) + "</div></div>" +
+        '<div class="r-section-title">Top violations<small>Ads that failed or need a fix on each rule</small></div>' +
+        violHtml +
+        '<div class="r-section-title">Every ad checked<small>' + results.length + " " + (results.length === 1 ? "ad" : "ads") + "</small></div>" +
+        '<table class="ads-table"><thead><tr><th>#</th><th>Ad</th><th>Verdict</th><th style="text-align:right">Score</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+      "</div>" +
+      '<footer class="r-foot"><span>Prepared with <b>Gyaanio AdCheck</b> against DLD and RERA advertising rules. Guidance only, not legal advice.</span>' +
+        "<span>Fines start at AED 50,000 per violation and double on repeat.</span></footer>";
+
+    els.reportSection.classList.add("on");
+    els.reportSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  els.print.addEventListener("click", () => window.print());
+  els.edit.addEventListener("click", () => { els.ads.scrollIntoView({ behavior: "smooth", block: "center" }); els.ads.focus({ preventScroll: true }); });
+
+  syncAds();
+})();
+</script>
+</body>
+</html>
