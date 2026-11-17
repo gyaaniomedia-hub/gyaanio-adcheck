@@ -30,7 +30,7 @@ The site has no backend in this repository. All API calls go to a **Supabase Edg
 
 Every push to `main` triggers `.github/workflows/pages.yml`, which uploads the repository root with `actions/upload-pages-artifact` and publishes it with `actions/deploy-pages`. The `.nojekyll` file tells GitHub Pages to serve files as-is without Jekyll processing.
 
-Live site: <https://gyaaniomedia-hub.github.io/gyaanio-adcheck/>
+Live site: <https://adcheck.gyaaniomedia.com/>
 
 ## PDF reports
 

@@ -24,7 +24,7 @@
     white: "#FFFFFF"
   };
 
-  var FOOTER_1 = "Checked by Gyaanio AdCheck, gyaaniomedia.com, WhatsApp +971 56 904 6294";
+  var FOOTER_1 = "Checked by Gyaanio AdCheck, adcheck.gyaaniomedia.com, WhatsApp +971 56 904 6294";
   var FOOTER_2 = "Guidance only, not legal advice. Confirm details with your Trakheesi permit.";
 
   var ready = null;
