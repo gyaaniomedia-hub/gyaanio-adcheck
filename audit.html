@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gyaanio AdCheck | Brokerage Compliance Audit</title>
 <meta name="description" content="Run a branded DLD and RERA compliance audit across up to 50 property ads.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
@@ -33,13 +32,13 @@
   /* Audit page additions on top of styles.css */
   [hidden] { display: none !important; }
   .card + .card { margin-top: 24px; }
-  .card h2 { font-family: var(--serif); font-weight: 600; font-size: 26px; line-height: 1.2; margin: 0 0 6px; color: var(--black); display: flex; align-items: center; }
+  .card h2 { font-family: var(--serif); font-weight: 600; font-size: 26px; line-height: 1.2; margin: 0 0 6px; color: var(--ink); display: flex; align-items: center; }
   .card .sub { margin: 0 0 28px; color: var(--muted); font-size: 14px; }
-  .step { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid var(--orange); color: var(--orange); font-family: var(--serif); font-size: 15px; font-weight: 600; margin-right: 14px; }
+  .step { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid var(--orange); border-radius: 50%; color: var(--orange); font-family: var(--serif); font-size: 15px; font-weight: 700; margin-right: 14px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   #adsInput { min-height: 260px; font-size: 14px; }
 
-  .logo-drop { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); border-radius: 0; padding: 8px 14px; background: var(--cream); cursor: pointer; }
+  .logo-drop { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); border-radius: var(--r-field); padding: 8px 14px; background: var(--field); cursor: pointer; }
   .logo-drop:hover { border-color: var(--ink); }
   .logo-drop input { display: none; }
   .logo-drop strong { display: block; font-size: 14px; }
@@ -47,21 +46,21 @@
   .logo-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
   .meta-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--muted); margin-top: 8px; }
-  .meta-row b { color: var(--black); }
+  .meta-row b { color: var(--ink); }
   .meta-row .over { color: var(--fail); font-weight: 600; }
 
   .bulk { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
   .ads { display: grid; gap: 10px; }
-  .ad-item { display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: start; padding: 16px 18px; border: 1px solid var(--line); border-radius: 0; background: var(--cream); }
+  .ad-item { display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: start; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--r-field); background: var(--field); }
   .ad-num { font-family: var(--serif); font-weight: 600; color: var(--gold); font-size: 18px; line-height: 1.3; }
   .ad-text { font-size: 14px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .ad-flags { display: flex; gap: 8px; flex-wrap: wrap; }
-  .ad-flags label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; cursor: pointer; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+  .ad-flags label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; cursor: pointer; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); }
   .ad-flags label:has(input:checked) { border-color: var(--gold); background: var(--orange-tint); }
   .ad-flags input { accent-color: var(--gold); width: 15px; height: 15px; margin: 0; }
   .ad-item.short { border-color: var(--fail); }
   .ad-item.short .ad-text::after { content: "  Too short to check, needs 20 characters"; color: var(--fail); font-weight: 600; }
-  .empty { text-align: center; color: var(--muted); padding: 22px; border: 1px solid var(--line); border-radius: 0; font-size: 14px; background: var(--stone); }
+  .empty { text-align: center; color: var(--muted); padding: 22px; border: 1px solid var(--line); border-radius: var(--r-field); font-size: 14px; background: var(--field); }
   .btn:disabled { opacity: .45; cursor: not-allowed; }
 
   .progress { display: none; }
@@ -69,7 +68,7 @@
   .bar { height: 3px; background: var(--line); overflow: hidden; margin: 24px 0 10px; }
   .bar > i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .35s ease; }
   .progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
-  .progress-label b { color: var(--black); }
+  .progress-label b { color: var(--ink); }
   .log { margin-top: 10px; font-size: 13px; color: var(--muted); max-height: 140px; overflow: auto; }
 
   /* Report */
@@ -77,7 +76,11 @@
   #reportSection.on { display: block; }
   .report-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 56px 0 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
   .report-toolbar .section-title { margin: 0; }
-  .report { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; max-width: 860px; margin: 0 auto; line-height: 1.55; }
+  .report {
+    --ink: #111111; --black: #0B0B0B; --line: #DAD5CD; --muted: #6B6864; --body: #3A3733; --cream: #F3F0EB; --stone: #F3F0EB; --white: #FFFFFF;
+    --pass: #111111; --pass-bg: #F3F0EB; --warn: #C2431A; --warn-bg: #FBE9E2; --orange-deep: #C2431A; --orange-tint: #FBE9E2; --surface-2: #F3F0EB;
+    color: #111111;
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; max-width: 860px; margin: 0 auto; line-height: 1.55; }
   .r-head { background: var(--black); color: var(--cream); padding: 32px 40px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid var(--gold); }
   .r-logo { width: 64px; height: 64px; border-radius: 0; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
   .r-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -191,7 +194,7 @@
 
 <div class="topbar no-print">
   <div class="wrap">
-    <a class="brand" href="index.html"><img src="assets/gyaanio-logo-white.png" alt="Gyaanio Media" class="brand-logo"><span class="brand-sep"></span><b>AdCheck</b></a>
+    <a class="brand" href="https://gyaaniomedia.com" title="Gyaanio Media home"><img src="assets/gyaanio-logo-white.png" alt="Gyaanio Media" class="brand-logo"><span class="brand-sep"></span><b>AdCheck</b></a>
     <nav class="nav" aria-label="Main">
       <a href="index.html">Check an ad</a>
       <a href="write.html">Write a listing</a>
@@ -276,6 +279,15 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
     </div>
     <div class="error no-print" id="pdfError" role="alert" style="max-width:860px;margin:0 auto 16px"></div>
     <article class="report" id="report"></article>
+    <section class="consult no-print">
+      <div>
+        <div class="eyebrow">Gyaanio Media</div>
+        <h3>Want every ad your team publishes to pass first time?</h3>
+        <p>We review your listings, fix your templates and run compliant campaigns for developers, brokerages and premium brands in Dubai.</p>
+      </div>
+      <a class="btn gold" href="https://gyaaniomedia.com/contact/">Book a private consultation</a>
+    </section>
+
   </section>
   <aside class="cta no-print">
     <div>
@@ -297,7 +309,7 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
 <footer class="foot no-print">
   <div class="wrap">
     <span>© Gyaanio Media. Guidance only, not legal advice. Confirm details with your Trakheesi permit.</span>
-    <a href="index.html">Check a single ad</a>
+    <span class="foot-links"><a href="index.html">Check a single ad</a><a href="https://gyaaniomedia.com">Gyaanio Media</a></span>
   </div>
 </footer>
 
