@@ -56,7 +56,7 @@ function checkText(name, r, expect) {
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
-  for (const f of fs.readdirSync(OUT)) if (/^(single|audit)_pdf.*\.png$|\.pdf$/.test(f)) fs.unlinkSync(path.join(OUT, f));
+  for (const f of fs.readdirSync(OUT)) if (/^(single|audit)_pdf.*\.png$|^(single|audit)-report-.*\.pdf$/.test(f)) fs.unlinkSync(path.join(OUT, f));
   const logoPath = path.join(OUT, "palmcrest_logo.svg");
   fs.writeFileSync(logoPath, LOGO_SVG);
   const srv = await serve();
