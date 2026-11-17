@@ -104,11 +104,11 @@ a { color: inherit; }
 .hero {
   background-color: var(--black);
   background-image:
-    linear-gradient(90deg, rgba(11,11,11,0.96) 0%, rgba(11,11,11,0.86) 38%, rgba(11,11,11,0.45) 72%, rgba(11,11,11,0.30) 100%),
-    linear-gradient(0deg, rgba(11,11,11,0.70) 0%, rgba(11,11,11,0) 45%),
+    linear-gradient(90deg, rgba(11,11,11,0.94) 0%, rgba(11,11,11,0.80) 36%, rgba(11,11,11,0.35) 70%, rgba(11,11,11,0.20) 100%),
+    linear-gradient(0deg, rgba(11,11,11,0.55) 0%, rgba(11,11,11,0) 40%),
     image-set(url("assets/dubai-skyline-1200.jpg") 1x, url("assets/dubai-skyline.jpg") 2x);
   background-size: cover;
-  background-position: right 30%;
+  background-position: center 18%;
   color: var(--stone);
   padding: var(--s8) 0 120px;
   border-bottom: 1px solid var(--line-dark);
@@ -433,10 +433,10 @@ mark.ph { background: var(--orange-tint); color: var(--orange-deep); font-weight
   margin: var(--s8) 0 0;
   background-color: var(--black);
   background-image:
-    linear-gradient(90deg, rgba(11,11,11,0.97) 0%, rgba(11,11,11,0.90) 50%, rgba(11,11,11,0.62) 100%),
+    linear-gradient(90deg, rgba(11,11,11,0.95) 0%, rgba(11,11,11,0.80) 45%, rgba(11,11,11,0.55) 100%),
     image-set(url("assets/dubai-skyline-1200.jpg") 1x, url("assets/dubai-skyline.jpg") 2x);
   background-size: cover;
-  background-position: center 40%;
+  background-position: center 70%;
   color: var(--stone);
   border-radius: 0;
   padding: 48px;
