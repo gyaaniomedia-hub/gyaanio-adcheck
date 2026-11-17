@@ -235,16 +235,16 @@
 
   function insta(d) {
     var L = [];
-    L.push((d.offplan ? "New launch. " : "") + d.unit + " ✨");
+    L.push((d.offplan ? "New launch. " : "") + d.unit);
     L.push("");
-    L.push("📐 " + d.size + " sq ft");
-    L.push("💰 AED " + d.price);
-    if (d.plan) L.push("🗓 Payment plan " + d.plan);
-    L.push("🏗 Developer: " + d.developer);
-    L.push("🔑 " + (d.offplan ? "Expected completion " : "Completion ") + d.completion);
+    L.push("Size: " + d.size + " sq ft");
+    L.push("Price: AED " + d.price);
+    if (d.plan) L.push("Payment plan: " + d.plan);
+    L.push("Developer: " + d.developer);
+    L.push((d.offplan ? "Expected completion " : "Completion ") + d.completion);
     if (d.list.length) {
       L.push("");
-      d.list.slice(0, 4).forEach(function (h) { L.push("✔ " + h); });
+      d.list.slice(0, 4).forEach(function (h) { L.push("• " + h); });
     }
     L.push("");
     L.push("DM us or call " + or(d.phone, "CONTACT NUMBER") + " for the floor plan and a private viewing.");

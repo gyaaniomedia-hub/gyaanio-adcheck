@@ -8,7 +8,7 @@ Gyaanio AdCheck is a static website served from the root of this repository via 
 | --- | --- |
 | `index.html` | Home / landing page |
 | `write.html` | Write ad copy |
-| `audit.html` | Brokerage audit: check up to 50 ads in one run and print a branded A4 compliance report |
+| `audit.html` | Brokerage audit: check up to 50 ads in one run and download a branded A4 PDF report |
 
 ## Running locally
 
@@ -32,6 +32,10 @@ Every push to `main` triggers `.github/workflows/pages.yml`, which uploads the r
 
 Live site: <https://gyaaniomedia-hub.github.io/gyaanio-adcheck/>
 
+## PDF reports
+
+`assets/report-pdf.js` builds the A4 portrait "Ad Compliance Report" in the browser with pdfmake (`assets/vendor/pdfmake.min.js`) and saves it as a real PDF file on desktop and phone. It embeds Poppins and Playfair Display from `assets/fonts`, puts the dark Gyaanio Media logo (`assets/gyaanio-logo-dark.png`) at the top and the Gyaanio mark (`assets/gyaanio-mark.png`) as a diagonal watermark at about 6 percent opacity on every page, with the footer and page number. Table headers repeat on each page and rows never split.
+
 ## Tests
 
 ```bash
@@ -39,3 +43,9 @@ node tests/audit.test.js
 ```
 
 Runs a five ad audit on `audit.html` against the live function in headless Chromium, checks the counts, fine exposure, print layout and copy, and saves screenshots and a PDF to `tests/screenshots`.
+
+```bash
+node tests/pdf.test.js
+```
+
+Checks one sample ad and a five ad audit on desktop and phone viewports, downloads both PDF reports, verifies A4 size, footer, disclaimer and page numbers on every page and no dashes in copy, then renders each page to PNG in `tests/screenshots` (needs `pdftoppm`, `pdfinfo` and `pdftotext`).

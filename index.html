@@ -42,6 +42,11 @@
       <label class="check"><input type="checkbox" id="has_qr" name="has_qr"> The DLD QR code is on the creative</label>
     </div>
 
+    <div class="broker-row">
+      <label class="field" for="brokerName">Brokerage name <span class="hint">Optional, printed on your PDF report</span></label>
+      <input type="text" id="brokerName" name="brokerName" placeholder="Palm Crest Realty" autocomplete="organization">
+    </div>
+
     <div class="actions">
       <button type="submit" class="btn gold" id="runBtn"><span class="spinner" aria-hidden="true"></span><span class="label">Check my ad</span></button>
       <button type="button" class="btn ghost" id="sampleBtn">Try a sample ad</button>
@@ -51,9 +56,24 @@
 
   <div id="results" class="hidden" aria-live="polite">
     <section class="block">
-      <div class="verdict">
-        <div class="score" id="score">0<small>of 10</small></div>
+      <div class="report-bar">
         <div>
+          <div class="eyebrow">Compliance report</div>
+          <h2>Your advertisement, reviewed</h2>
+          <div class="date" id="reportDate"></div>
+        </div>
+        <button type="button" class="btn gold" id="pdfBtn"><span class="spinner" aria-hidden="true"></span><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 5-5m-5 5-5-5M4 19h16"/></svg><span class="label">Download PDF report</span></button>
+      </div>
+      <div class="error" id="pdfError" role="alert"></div>
+    </section>
+
+    <section class="block" style="margin-top:32px">
+      <div class="verdict">
+        <div class="score-col">
+          <div class="k">Score</div>
+          <div class="score" id="score">0<small>/ 100</small></div>
+        </div>
+        <div class="text-col">
           <h3><span id="verdictText">Result</span> <span class="pill" id="verdictPill"></span></h3>
           <p id="summary"></p>
           <p id="sourceNote" class="source-note" style="display:none"></p>
@@ -63,14 +83,14 @@
     </section>
 
     <section class="block">
-      <h2 class="section-title">Rule by rule</h2>
+      <div class="section-head"><h2 class="section-title">Rule by rule</h2><span class="kicker" id="ruleCount"></span></div>
       <ul class="rules" id="rules"></ul>
     </section>
 
     <section class="block">
       <div class="output">
         <div class="head">
-          <h3>Corrected ad</h3>
+          <h3>Corrected advertisement</h3>
           <button type="button" class="btn small" id="copyBtn">Copy corrected ad</button>
         </div>
         <pre id="rewritten"></pre>
@@ -98,11 +118,12 @@
 
 <footer class="foot">
   <div class="wrap">
-    <span>© Gyaanio. AdCheck is guidance, not legal advice. Always confirm details with your permit.</span>
+    <span>© Gyaanio Media. Guidance only, not legal advice. Confirm details with your Trakheesi permit.</span>
     <a href="write.html">Write a compliant listing</a>
   </div>
 </footer>
 
+<script src="assets/report-pdf.js" defer></script>
 <script>
 (function () {
   var ENDPOINT = "https://fktqdtxlbgixvozllnbq.supabase.co/functions/v1/adcheck";
@@ -115,6 +136,7 @@
   var results = document.getElementById("results");
   var rewrittenEl = document.getElementById("rewritten");
   var rewrittenText = "";
+  var lastResult = null, lastInput = null;
 
   var SAMPLE = "Luxury 2BR in Dubai Marina, guaranteed 10% ROI! Best price in the market, limited units. Call now 0501234567";
 
@@ -161,24 +183,28 @@
     var verdict = norm(data.verdict || (counts.fail ? "fail" : counts.warn ? "warn" : "pass"));
     var pill = document.getElementById("verdictPill");
     pill.className = "pill " + verdict;
-    pill.textContent = LABEL[verdict];
+    pill.textContent = verdict === "warn" ? "Fix needed" : LABEL[verdict];
     document.getElementById("verdictText").textContent =
-      verdict === "pass" ? "Ready to publish" : verdict === "warn" ? "Almost there" : "Not ready to publish";
+      verdict === "pass" ? "Ready to publish" : verdict === "warn" ? "Needs fixing before it runs" : "Not ready to publish";
+    document.getElementById("ruleCount").textContent = checks.length + " rules checked";
+    document.getElementById("reportDate").textContent = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
     var score = data.score;
     document.getElementById("score").innerHTML =
-      (typeof score === "number" ? esc(String(score)) : "?") + "<small>score</small>";
+      (typeof score === "number" ? esc(String(score)) : "?") + "<small>/ 100</small>";
     document.getElementById("summary").textContent = clean(data.summary);
     var noteEl = document.getElementById("sourceNote");
     if (noteEl) { noteEl.textContent = data.source_note ? clean(data.source_note) : ""; noteEl.style.display = data.source_note ? "block" : "none"; }
     document.getElementById("tally").innerHTML =
-      '<span class="pill pass">' + counts.pass + " Pass</span>" +
-      '<span class="pill warn">' + counts.warn + " Warn</span>" +
-      '<span class="pill fail">' + counts.fail + " Fail</span>";
+      '<span class="t"><b>' + counts.pass + "</b> Pass</span>" +
+      '<span class="t"><b>' + counts.warn + "</b> Warn</span>" +
+      '<span class="t fail"><b>' + counts.fail + "</b> Fail</span>";
 
     rewrittenText = clean(data.rewritten_ad || data.corrected_ad || "");
     rewrittenEl.innerHTML = esc(rewrittenText).replace(/\[([^\]]+)\]/g, '<mark class="ph">[$1]</mark>');
 
+    lastResult = data;
+    if (window.GyaanioReport) window.GyaanioReport.preload().catch(function () {});
     results.classList.remove("hidden");
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -189,6 +215,7 @@
     var ad = adEl.value.trim();
     if (ad.length < 10) { showError("Paste your ad text first. It needs at least a sentence to check."); adEl.focus(); return; }
     setLoading(true);
+    lastInput = { ad: ad, offplan: offplanEl.checked, hasQr: qrEl.checked };
     var ctrl = window.AbortController ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 90000);
     fetch(ENDPOINT, {
@@ -237,6 +264,32 @@
       document.body.removeChild(ta);
     }
   }
+
+  // PDF report
+  var pdfBtn = document.getElementById("pdfBtn");
+  var pdfErr = document.getElementById("pdfError");
+  pdfBtn.addEventListener("click", function () {
+    if (!lastResult || !window.GyaanioReport) return;
+    pdfErr.classList.remove("show");
+    pdfBtn.disabled = true; pdfBtn.classList.add("loading");
+    pdfBtn.querySelector(".label").textContent = "Preparing your PDF";
+    window.GyaanioReport.single({
+      result: lastResult,
+      ad: lastInput && lastInput.ad,
+      offplan: lastInput && lastInput.offplan,
+      hasQr: lastInput && lastInput.hasQr,
+      brokerage: document.getElementById("brokerName").value.trim()
+    }).then(function () {
+      pdfBtn.querySelector(".label").textContent = "PDF saved";
+      setTimeout(function () { pdfBtn.querySelector(".label").textContent = "Download PDF report"; }, 2200);
+    }).catch(function () {
+      pdfErr.textContent = "We could not build the PDF. Please try again.";
+      pdfErr.classList.add("show");
+      pdfBtn.querySelector(".label").textContent = "Download PDF report";
+    }).finally(function () {
+      pdfBtn.disabled = false; pdfBtn.classList.remove("loading");
+    });
+  });
 
   // Prefill from the listing writer.
   try {

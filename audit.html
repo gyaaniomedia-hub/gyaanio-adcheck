@@ -13,16 +13,15 @@
 <style>
   /* Audit page additions on top of styles.css */
   [hidden] { display: none !important; }
-  .card + .card { margin-top: 20px; }
-  .card h2 { font-family: var(--serif); font-size: 22px; margin: 0 0 4px; color: var(--black); }
-  .card .sub { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
-  .step { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--black); color: var(--gold); font-family: var(--sans); font-size: 13px; font-weight: 700; margin-right: 10px; vertical-align: 3px; }
-  span.field { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .card + .card { margin-top: 24px; }
+  .card h2 { font-family: var(--serif); font-weight: 600; font-size: 26px; line-height: 1.2; margin: 0 0 6px; color: var(--black); display: flex; align-items: center; }
+  .card .sub { margin: 0 0 28px; color: var(--muted); font-size: 14px; }
+  .step { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid var(--orange); color: var(--orange); font-family: var(--serif); font-size: 15px; font-weight: 600; margin-right: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   #adsInput { min-height: 260px; font-size: 14px; }
 
-  .logo-drop { display: flex; align-items: center; gap: 14px; border: 1px dashed var(--gold); border-radius: 0; padding: 8px 14px; background: var(--cream); cursor: pointer; }
-  .logo-drop:hover { background: var(--orange-tint); }
+  .logo-drop { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); border-radius: 0; padding: 8px 14px; background: var(--cream); cursor: pointer; }
+  .logo-drop:hover { border-color: var(--ink); }
   .logo-drop input { display: none; }
   .logo-drop strong { display: block; font-size: 14px; }
   .logo-thumb { width: 48px; height: 48px; border-radius: 0; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; color: var(--muted); font-size: 11px; }
@@ -34,7 +33,7 @@
 
   .bulk { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
   .ads { display: grid; gap: 10px; }
-  .ad-item { display: grid; grid-template-columns: 30px 1fr auto; gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 0; background: var(--cream); }
+  .ad-item { display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: start; padding: 16px 18px; border: 1px solid var(--line); border-radius: 0; background: var(--cream); }
   .ad-num { font-family: var(--serif); font-weight: 600; color: var(--gold); font-size: 18px; line-height: 1.3; }
   .ad-text { font-size: 14px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .ad-flags { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -42,14 +41,14 @@
   .ad-flags label:has(input:checked) { border-color: var(--gold); background: var(--orange-tint); }
   .ad-flags input { accent-color: var(--gold); width: 15px; height: 15px; margin: 0; }
   .ad-item.short { border-color: var(--fail); }
-  .ad-item.short .ad-text::after { content: "  Too short to check (needs 20 characters)"; color: var(--fail); font-weight: 600; }
-  .empty { text-align: center; color: var(--muted); padding: 22px; border: 1px dashed var(--line); border-radius: 0; font-size: 14px; }
+  .ad-item.short .ad-text::after { content: "  Too short to check, needs 20 characters"; color: var(--fail); font-weight: 600; }
+  .empty { text-align: center; color: var(--muted); padding: 22px; border: 1px solid var(--line); border-radius: 0; font-size: 14px; background: var(--stone); }
   .btn:disabled { opacity: .45; cursor: not-allowed; }
 
   .progress { display: none; }
   .progress.on { display: block; }
-  .bar { height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 18px 0 8px; }
-  .bar > i { display: block; height: 100%; width: 0; background: var(--gold); border-radius: 999px; transition: width .35s ease; }
+  .bar { height: 3px; background: var(--line); overflow: hidden; margin: 24px 0 10px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .35s ease; }
   .progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
   .progress-label b { color: var(--black); }
   .log { margin-top: 10px; font-size: 13px; color: var(--muted); max-height: 140px; overflow: auto; }
@@ -57,66 +56,67 @@
   /* Report */
   #reportSection { display: none; }
   #reportSection.on { display: block; }
-  .report-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 36px 0 14px; }
+  .report-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 56px 0 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
   .report-toolbar .section-title { margin: 0; }
-  .report { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; max-width: 794px; margin: 0 auto; box-shadow: 0 18px 40px rgba(11,11,11,.08); line-height: 1.5; }
-  .r-head { background: var(--black); color: var(--cream); padding: 26px 30px; display: flex; align-items: center; gap: 18px; border-bottom: 3px solid var(--gold); }
+  .report { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; max-width: 860px; margin: 0 auto; line-height: 1.55; }
+  .r-head { background: var(--black); color: var(--cream); padding: 32px 40px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid var(--gold); }
   .r-logo { width: 64px; height: 64px; border-radius: 0; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
   .r-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
   .r-logo.mono { background: var(--gold); color: var(--black); font-family: var(--serif); font-weight: 700; font-size: 24px; }
   .r-title { flex: 1; min-width: 0; }
   .r-title .eyebrow { margin: 0; font-size: 11px; }
-  .r-title h3 { font-family: var(--serif); font-size: 26px; margin: 2px 0 0; line-height: 1.2; overflow-wrap: anywhere; }
+  .r-title h3 { font-family: var(--serif); font-weight: 600; font-size: 30px; margin: 2px 0 0; line-height: 1.2; overflow-wrap: anywhere; }
   .r-date { text-align: right; font-size: 12px; color: rgba(251,248,242,.7); flex: none; }
   .r-date b { display: block; color: var(--cream); font-size: 14px; font-weight: 600; }
-  .r-body { padding: 24px 30px 26px; }
-  .r-section-title { font-family: var(--serif); font-size: 17px; color: var(--black); margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .r-body { padding: 36px 40px 40px; }
+  .r-section-title { font-family: var(--serif); font-weight: 600; font-size: 21px; color: var(--black); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
   .r-section-title:first-child { margin-top: 0; }
   .r-section-title small { font-family: var(--sans); font-size: 11px; color: var(--muted); font-weight: 500; }
 
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .stat { border: 1px solid var(--line); border-radius: 0; padding: 12px 14px; background: var(--cream); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--line); }
+  .stat { border-left: 1px solid var(--line); border-radius: 0; padding: 18px 20px; background: #fff; }
+  .stat:first-child { border-left: 0; }
   .stat .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
-  .stat .v { font-family: var(--serif); font-size: 30px; font-weight: 700; line-height: 1.1; margin-top: 4px; color: var(--black); }
+  .stat .v { font-family: var(--serif); font-size: 38px; font-weight: 600; line-height: 1.1; margin-top: 4px; color: var(--black); }
   .stat.pass .v { color: var(--pass); }
   .stat.fix .v { color: var(--warn); }
   .stat.fail .v { color: var(--fail); }
   .stat .p { font-size: 11.5px; color: var(--muted); }
-  .split { display: flex; height: 10px; border-radius: 999px; overflow: hidden; margin-top: 12px; background: var(--line); gap: 2px; }
+  .split { display: flex; height: 4px; overflow: hidden; margin-top: 16px; background: var(--line); gap: 2px; }
   .split i { display: block; height: 100%; }
   .split .s-pass { background: var(--pass); }
   .split .s-fix { background: var(--warn); }
   .split .s-fail { background: var(--fail); }
 
-  .exposure { margin-top: 14px; background: var(--black); color: var(--cream); border-radius: 0; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; border-left: 4px solid var(--gold); }
+  .exposure { margin-top: 16px; background: var(--black); color: var(--cream); border-radius: 0; padding: 22px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; border-left: 2px solid var(--gold); }
   .exposure .k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
   .exposure .note { font-size: 12px; color: rgba(251,248,242,.7); margin-top: 2px; }
-  .exposure .v { font-family: var(--serif); font-size: 30px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+  .exposure .v { font-family: var(--serif); font-size: 34px; font-weight: 600; color: var(--gold); white-space: nowrap; }
 
-  .viol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-  .viol li { display: grid; grid-template-columns: 26px 1fr 150px 74px; gap: 10px; align-items: center; font-size: 13.5px; }
+  .viol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .viol li { display: grid; grid-template-columns: 30px 1fr 150px 84px; gap: 14px; align-items: center; font-size: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
   .viol .rank { font-family: var(--serif); font-weight: 700; color: var(--gold); font-size: 16px; }
   .viol .name { font-weight: 600; }
-  .viol .meter { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; }
-  .viol .meter i { display: block; height: 100%; background: var(--gold); border-radius: 999px; }
+  .viol .meter { height: 3px; background: var(--line); overflow: hidden; }
+  .viol .meter i { display: block; height: 100%; background: var(--gold); }
   .viol .num { text-align: right; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
   .viol .num b { color: var(--black); font-size: 14px; }
-  .none { font-size: 13.5px; color: var(--pass); font-weight: 600; margin: 0; }
+  .none { font-size: 14px; color: var(--ink); font-weight: 600; margin: 0; }
 
-  table.ads-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.ads-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .ads-table th { text-align: left; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--ink); }
-  .ads-table td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .ads-table td { padding: 12px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
   .ads-table tr:nth-child(even) td { background: #FFFFFF; }
   .ads-table .c-num { width: 30px; color: var(--gold); font-weight: 700; }
   .ads-table .c-ad .ex { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .ads-table .c-ad .flags { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
-  .ads-table .c-verdict { width: 108px; }
+  .ads-table .c-verdict { width: 120px; }
   .ads-table .c-score { width: 64px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
   .report .pill { font-size: 10.5px; padding: 3px 9px; }
   .pill.fix { background: var(--warn-bg); color: var(--warn); }
   .pill.err { background: #EEE; color: #555; }
 
-  .r-foot { padding: 14px 30px; background: var(--cream); border-top: 1px solid var(--line); font-size: 10.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; }
+  .r-foot { padding: 18px 40px; background: var(--cream); border-top: 1px solid var(--line); font-size: 10.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; }
   .r-foot b { color: var(--gold); }
 
   @media (max-width: 720px) {
@@ -150,6 +150,15 @@
     .stat .v, .exposure .v { font-size: 24px; }
     .exposure { padding: 12px 16px; flex-direction: row; align-items: center; }
     .viol li { grid-template-columns: 22px 1fr 130px 70px; }
+    .viol li { padding: 4px 0; font-size: 12px; }
+    .stat { padding: 10px 12px; }
+    .split { margin-top: 10px; }
+    .exposure { margin-top: 10px; }
+    .r-title h3 { font-size: 24px; }
+    .r-section-title { margin: 10px 0 6px; padding-bottom: 4px; font-size: 16px; }
+    .ads-table td { padding: 3px 6px; }
+    .stat .v { font-size: 22px; }
+    .r-foot { padding: 8px 20px; }
     .viol .meter { display: block; }
     .ads-table { font-size: 10.5px; }
     .ads-table td { padding: 4px 6px; }
@@ -176,7 +185,7 @@
   <div class="wrap">
     <span class="eyebrow">Brokerage compliance audit</span>
     <h1>Audit every ad your team <em>publishes</em> in one pass.</h1>
-    <p class="lead">Paste up to 50 property ads, tick what applies to each one, and get a branded compliance audit against DLD and RERA advertising rules, ready to print or save as PDF.</p>
+    <p class="lead">Paste up to 50 property ads, tick what applies to each one, and get a branded compliance audit against DLD and RERA advertising rules, ready to download as a PDF report.</p>
   </div>
 </header>
 
@@ -187,7 +196,7 @@
     <div class="grid2">
       <div>
         <label class="field" for="brokerName">Brokerage name</label>
-        <input type="text" id="brokerName" placeholder="e.g. Palm Crest Realty" autocomplete="organization">
+        <input type="text" id="brokerName" placeholder="Palm Crest Realty" autocomplete="organization">
       </div>
       <div>
         <span class="field">Logo</span>
@@ -243,9 +252,10 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
       <h2 class="section-title" id="reportHeading">Your compliance audit</h2>
       <div class="actions">
         <button type="button" class="btn ghost" id="editBtn">Edit ads</button>
-        <button type="button" class="btn" id="printBtn">Print to PDF</button>
+        <button type="button" class="btn gold" id="printBtn"><span class="spinner" aria-hidden="true"></span><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 5-5m-5 5-5-5M4 19h16"/></svg><span class="label">Download PDF report</span></button>
       </div>
     </div>
+    <div class="error no-print" id="pdfError" role="alert" style="max-width:860px;margin:0 auto 16px"></div>
     <article class="report" id="report"></article>
   </section>
   <aside class="cta no-print">
@@ -267,11 +277,12 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
 
 <footer class="foot no-print">
   <div class="wrap">
-    <span>© Gyaanio. AdCheck is guidance, not legal advice. Always confirm details with your permit.</span>
+    <span>© Gyaanio Media. Guidance only, not legal advice. Confirm details with your Trakheesi permit.</span>
     <a href="index.html">Check a single ad</a>
   </div>
 </footer>
 
+<script src="assets/report-pdf.js" defer></script>
 <script>
 (() => {
   const ENDPOINT = "https://fktqdtxlbgixvozllnbq.supabase.co/functions/v1/adcheck";
@@ -302,6 +313,7 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
   let ads = [];            // [{ text, offplan, qr }]
   let running = false;
   let stopRequested = false;
+  let lastAudit = null;
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fmtAED = (n) => "AED " + n.toLocaleString("en-US");
@@ -396,7 +408,7 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
           body: JSON.stringify({ ad: ad.text, offplan: !!ad.offplan, has_qr: !!ad.qr }),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.error) throw new Error(data.error || "Request failed (" + res.status + ")");
+        if (!res.ok || data.error) throw new Error(data.error || "Request failed with status " + res.status);
         return data;
       } catch (err) {
         lastErr = err;
@@ -460,11 +472,11 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
       try {
         const r = await checkAd(snapshot[i]);
         const verdict = normVerdict(r.verdict);
-        results.push({ ad: snapshot[i], verdict, score: Number.isFinite(+r.score) ? Math.round(+r.score) : null, checks: Array.isArray(r.checks) ? r.checks : [] });
+        results.push({ ad: snapshot[i], verdict, score: Number.isFinite(+r.score) ? Math.round(+r.score) : null, checks: Array.isArray(r.checks) ? r.checks : [], summary: r.summary || "", rewritten: r.rewritten_ad || r.corrected_ad || "" });
         logLine("Ad " + (i + 1) + ": <b>" + esc(verdict || "Unknown") + "</b>" + (r.score != null ? ", score " + esc(r.score) : ""));
       } catch (err) {
         results.push({ ad: snapshot[i], verdict: "", score: null, checks: [], error: err.message });
-        logLine("Ad " + (i + 1) + ": could not be checked (" + esc(err.message) + ")");
+        logLine("Ad " + (i + 1) + ": could not be checked. " + esc(err.message));
       }
       setProgress(i + 1, total, (i + 1 === total ? "All " + total + " ads checked" : "Checked " + (i + 1) + " of " + total));
     }
@@ -536,7 +548,7 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
       : '<p class="none">No rule was broken by any ad checked. Well done.</p>';
 
     const rows = results.map((r, i) => {
-      const flags = [r.ad.offplan ? "Off plan" : "", r.ad.qr ? "QR present" : ""].filter(Boolean).join(" · ");
+      const flags = [r.ad.offplan ? "Off plan" : "", r.ad.qr ? "QR present" : ""].filter(Boolean).join(", ");
       return "<tr>" +
         '<td class="c-num">' + (i + 1) + "</td>" +
         '<td class="c-ad"><div class="ex">' + esc(r.ad.text) + "</div>" + (flags ? '<div class="flags">' + flags + "</div>" : "") + "</td>" +
@@ -563,7 +575,7 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
           (cFix ? '<i class="s-fix" style="flex:' + cFix + '"></i>' : "") +
           (cFail ? '<i class="s-fail" style="flex:' + cFail + '"></i>' : "") +
         "</div>" +
-        '<div class="exposure"><div><div class="k">Estimated fine exposure</div><div class="note">' + cFail + " failing " + (cFail === 1 ? "ad" : "ads") + " × AED 50,000 per ad</div></div>" +
+        '<div class="exposure"><div><div class="k">Estimated fine exposure</div><div class="note">' + cFail + " failing " + (cFail === 1 ? "ad" : "ads") + " at AED 50,000 per ad</div></div>" +
           '<div class="v">' + fmtAED(cFail * FINE_PER_AD) + "</div></div>" +
         '<div class="r-section-title">Top violations<small>Ads that failed or need a fix on each rule</small></div>' +
         violHtml +
@@ -573,11 +585,30 @@ Off plan townhouses in Dubai South by a leading developer. 60/40 payment plan...
       '<footer class="r-foot"><span>Prepared with <b>Gyaanio AdCheck</b> against DLD and RERA advertising rules. Guidance only, not legal advice.</span>' +
         "<span>Fines start at AED 50,000 per violation and double on repeat.</span></footer>";
 
+    lastAudit = {
+      brokerage: els.name.value.trim(),
+      logoData,
+      results,
+      totals: { checked: n, pass: cPass, fix: cFix, fail: cFail, notChecked, avg },
+      top,
+    };
+    if (window.GyaanioReport) window.GyaanioReport.preload().catch(() => {});
     els.reportSection.classList.add("on");
     els.reportSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  els.print.addEventListener("click", () => window.print());
+  els.print.addEventListener("click", () => {
+    if (!lastAudit || !window.GyaanioReport) return;
+    const label = els.print.querySelector(".label");
+    const pdfErr = $("pdfError");
+    pdfErr.classList.remove("show");
+    els.print.disabled = true; els.print.classList.add("loading");
+    label.textContent = "Preparing your PDF";
+    window.GyaanioReport.audit(lastAudit)
+      .then(() => { label.textContent = "PDF saved"; setTimeout(() => { label.textContent = "Download PDF report"; }, 2200); })
+      .catch(() => { pdfErr.textContent = "We could not build the PDF. Please try again."; pdfErr.classList.add("show"); label.textContent = "Download PDF report"; })
+      .finally(() => { els.print.disabled = false; els.print.classList.remove("loading"); });
+  });
   els.edit.addEventListener("click", () => { els.ads.scrollIntoView({ behavior: "smooth", block: "center" }); els.ads.focus({ preventScroll: true }); });
 
   syncAds();
