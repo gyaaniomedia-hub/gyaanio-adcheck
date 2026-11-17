@@ -43,7 +43,7 @@ function render(pdf, prefix) {
 function checkText(name, r, expect) {
   const fails = [];
   for (const s of expect) if (!r.text.includes(s)) fails.push("missing: " + s);
-  const footers = (r.text.match(/Checked by Gyaanio AdCheck, gyaaniomedia\.com, WhatsApp \+971 56 904 6294/g) || []).length;
+  const footers = (r.text.match(/Checked by Gyaanio AdCheck, adcheck\.gyaaniomedia\.com, WhatsApp \+971 55 734 1998/g) || []).length;
   const notes = (r.text.match(/Guidance only, not legal advice\. Confirm details with your Trakheesi permit\./g) || []).length;
   if (footers !== r.pages) fails.push(`footer on ${footers} of ${r.pages} pages`);
   if (notes !== r.pages) fails.push(`disclaimer on ${notes} of ${r.pages} pages`);
